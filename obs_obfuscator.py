@@ -1,10 +1,11 @@
 from os import listdir
-from os.path import isfile, join, dirname, realpath
+from os.path import isfile, join, dirname, realpath, exists, isdir, isfile
 import time
 import json
 from functools import partial
 import logging
 import click
+from screeninfo import get_monitors
 
 from obswebsocket import obsws, requests
 import numpy
@@ -86,24 +87,21 @@ def frame_contains_one_or_more_matching_images(frame, mask, image_descriptors, f
 
 @click.command()
 @click.option('--show-debug-window', is_flag=True)
+@click.option('--monitor', default=1, show_default=True, help='Index of the screen to capture', metavar='<int>')
+@click.option('--format', required=True, type=click.Choice(['720p','960p','1080p', '1440p', '2160p'], case_sensitive=False), help='Screen format')
+@click.option('--scene-on', default="Live Gaming (Map Covered)", show_default=True, help='Scene to activate when triggered (use quotes if necessary)', metavar='<text>')
+@click.option('--scene-off', default="Live Gaming", show_default=True, help='Scene to activate when not triggered (use quotes if necessary)', metavar='<text>')
+@click.option('--features', default=500, show_default=True, help='Number of features to detect', metavar='<int>')
+@click.option('--matches', default=20, show_default=True, help='Number of matches required for triggering', metavar='<int>')
 @click.argument('resource-dir', type=click.Path(exists=True,file_okay=False, dir_okay=True))
-def main(resource_dir, show_debug_window):
-    
-    with open(dirname(realpath(__file__)) + "/settings.json") as settings_file:
-        application_settings = json.load(settings_file)
+def main(resource_dir, monitor, format, scene_on, scene_off, features, matches, show_debug_window):
 
-    if application_settings["screen_format"] not in ["1440p","1080p"]:
-        println("Only 1440p or 1080p screen formats currently supported")
+    image_directory = resource_dir + "/" + format
+    mask_file = resource_dir + "/mask-" + format + ".png"
+
+    if not exists(image_directory) or not isdir(image_directory) or not exists(mask_file) or not isfile(mask_file):
+        print("Format {} is not supported by the game resources".format(format))
         exit(1)
-
-    print("Running with settings:", application_settings)
-    image_directory = resource_dir + "/" + application_settings["screen_format"]
-    mask_file = resource_dir + "/mask-" + application_settings["screen_format"] + ".png"
-    monitor_to_capture = application_settings["monitor_to_capture"]
-    default_scene_name = application_settings["default_scene_name"]
-    target_scene_name = application_settings["target_scene_name"]
-    num_features_to_detect = application_settings["num_features_to_detect"]
-    num_good_matches_required = application_settings["num_good_matches_required"]
 
     try:
         image_files_to_search_for = [cv2.cvtColor(cv2.imread(join(image_directory, f)), cv2.COLOR_BGR2GRAY) for f in listdir(image_directory) if isfile(join(image_directory, f))]
@@ -114,22 +112,22 @@ def main(resource_dir, show_debug_window):
     obs = obsws(host, port)
     obs.connect()
 
-    scenes = obs.call(requests.GetSceneList())
-    print("Detected scenes in OBS: " + str(scenes))
+    scenes = obs.call(requests.GetSceneList()).getScenes()
+    print("Detected scenes in OBS: " + str([scene["name"] for scene in scenes]))
 
-    feature_detector = cv2.ORB_create(nfeatures=num_features_to_detect, scoreType=cv2.ORB_FAST_SCORE, nlevels=1, fastThreshold=10)
+    feature_detector = cv2.ORB_create(nfeatures=features, scoreType=cv2.ORB_FAST_SCORE, nlevels=1, fastThreshold=10)
     image_descriptors = [feature_detector.detectAndCompute(image, None)[1] for image in image_files_to_search_for]
 
     feature_matcher = cv2.BFMatcher(cv2.NORM_HAMMING)
 
     if show_debug_window:
         cv2.startWindowThread()
-        cv2.namedWindow("test")
+        cv2.namedWindow("OBS Obfuscator - Debug Window")
 
     with mss() as screen_capture:
         while True:
             try:
-                tick_time, num_matches = execute_tick(screen_capture, monitor_to_capture, image_mask, image_descriptors, feature_detector, feature_matcher, num_good_matches_required, obs, default_scene_name, target_scene_name, show_debug_window)
+                tick_time, num_matches = execute_tick(screen_capture, monitor, image_mask, image_descriptors, feature_detector, feature_matcher, matches, obs, scene_off, scene_on, show_debug_window)
                 if tick_time:
                     print("Tick took {} seconds. Suggested OBS source delay: {}ms. Num good matches: {}".format(tick_time, round(tick_time, 2) * 1000, num_matches))
             except Exception as e:
@@ -137,4 +135,4 @@ def main(resource_dir, show_debug_window):
 
 
 if __name__ == "__main__":
-    main()
+    main(auto_envvar_prefix='OBFUSCATOR')
