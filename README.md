@@ -29,5 +29,5 @@ The hll_map_open_detection folder contains images which are always displayed whe
     - num_features_to_detect: Affects the accuracy and speed of the matching.
     - num_good_matches_required: Affects the false-match frequency
     - show_debug_window: Set to true in order to view the screen that the script is trying to match image_directory images in
-7. Run the script: `obs_screen_recognition_script.py`, providing the folder where matching images are stored (currently only one game supported, `hll`) tweak settings/images if necessary (Enable the `--show_debug_window` flag to display what the script is seeing).
+7. Run the script: `obs_obfuscator.py`, providing the folder where matching images are stored (currently only one game supported, `hll`) tweak settings/images if necessary (Enable the `--show_debug_window` flag to display what the script is seeing).
 8. Since the script is not instantaneous (it takes a small amount of time to recognise the images, and a small amount of time to contact OBS), it is probably a good idea to look at the script's "Suggested OBS source delay" logs and set your scene delay (in OBS) to something around that. ~150ms seems to work well on the creator's hardware.
