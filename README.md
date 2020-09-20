@@ -10,7 +10,7 @@ This script is designed to recognise specific content on your screen and change 
 
 The initial use-case is to recognise when the map is open in Hell Let Loose, and change scenes in OBS so that map is not revealed to the live broadcast viewers.
 
-The `hll` folder contains images which are always displayed when the HLL map is open, and a mask file to reduce the image down to where those images show. These images are organized for multiple screen resolutions (currently only 1080p and 1440p). Use the "--show-debug-window" option to see what the script sees after applying the mask.
+The `hll` folder contains images which are always displayed when the HLL map is open, and a mask file to reduce the image down to where those images show. These images are organized for screen resolutions (currently only 1080p and 1440p). Use the "--show-debug-window" option to see what the script sees after applying the mask.
 
 **With your contributions additional games and format might be supported: submit your files via a Github Pull Request.**
 
