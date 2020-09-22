@@ -1,10 +1,5 @@
 {
-    "monitor": 1,
     "format": "1080p",
     "scene_off": "Live Gaming",
-    "scene_on": "Live Gaming (Map Covered)",
-    "features": 500,
-    "matches": 20,
-    "port": 4444,
-    "show_debug_window": true
+    "scene_on": "Live Gaming (Map Covered)"
 }
