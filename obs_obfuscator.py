@@ -87,8 +87,8 @@ def frame_contains_one_or_more_matching_images(frame, mask, image_descriptors, f
 @click.option('--show-debug-window', is_flag=True)
 @click.option('--monitor', default=1, show_default=True, help='Index of the screen to capture', metavar='<int>')
 @click.option('--format', required=True, type=click.Choice(['720p','960p','1080p', '1440p', '2160p'], case_sensitive=False), help='Screen format', prompt='Your game resolution')
-@click.option('--scene-on', default="Live Gaming (Map Covered)", show_default=True, help='Scene to activate when triggered (use quotes if necessary)', metavar='<text>')
-@click.option('--scene-off', default="Live Gaming", show_default=True, help='Scene to activate when not triggered (use quotes if necessary)', metavar='<text>')
+@click.option('--scene-on', required=True, help='Scene to activate when triggered (use quotes if necessary)', metavar='<text>')
+@click.option('--scene-off', required=True, help='Scene to activate when not triggered (use quotes if necessary)', metavar='<text>')
 @click.option('--features', default=500, show_default=True, help='Number of features to detect', metavar='<int>')
 @click.option('--matches', default=20, show_default=True, help='Number of matches required for triggering', metavar='<int>')
 @click.option('--port', default=4444, show_default=True, help='OBS websocket listening port', metavar='<int>')
@@ -133,6 +133,6 @@ def main(resource_dir, monitor, format, scene_on, scene_off, features, matches, 
 
 
 if __name__ == "__main__":
-    with open(dirname(realpath(__file__)) + "/settings.json") as settings_file:
-        application_settings = json.load(settings_file)
-    main(auto_envvar_prefix='OBFUSCATOR', default_map=application_settings)
+    with open(dirname(realpath(__file__)) + "/defaults.json") as settings_file:
+        defaults = json.load(settings_file)
+    main(auto_envvar_prefix='OBFUSCATOR', default_map=defaults)
