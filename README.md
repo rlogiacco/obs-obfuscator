@@ -12,7 +12,7 @@ The initial use-case is to recognise when the map is open in Hell Let Loose, and
 
 The `hll` folder contains images which are always displayed when the HLL map is open, and a mask file to reduce the image down to where those images show. These images are organized for screen resolutions (currently only `1080p` and `1440p`). Use the "--show-debug-window" option to see what the script sees after applying the mask.
 
-**With your contributions additional games and format might be supported: submit your files via a Github Pull Request.**
+**With your contributions additional games and formats might be supported: submit your files via a Github Pull Request.**
 
 ## Usage
 1. Clone/download repository and extract into any folder (e.g. Downloads)
@@ -40,5 +40,17 @@ Default values are provided for each option, but if you find you often have to s
     "show_debug_window": true
 }
 ```
+
+Each option can also be provided via environment variables:
+
+* `OBFUSCATOR_MONITOR`
+* `OBFUSCATOR_FORMAT`
+* `OBFUSCATOR_SCENE_ON`
+* `OBFUSCATOR_SCENE_OFF`
+* `OBFUSCATOR_FEATURES`
+* `OBFUSCATOR_MATCHES`
+* `OBFUSCATOR_PORT`
+* `OBFUSCATOR_SHOW_DEBUG_WINDOW`
+
 
 An executable shell script (`.bat`) can be created to start the script without having to get to the command line each and every time, like the `hll_obfuscator.bat` example file.
