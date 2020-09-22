@@ -15,7 +15,6 @@ from mss import mss
 logging.basicConfig(level=logging.ERROR)
 
 host = "localhost"
-port = 4444
 
 print = partial(print, flush=True)
 
@@ -84,12 +83,7 @@ def frame_contains_one_or_more_matching_images(frame, mask, image_descriptors, f
             if len(good) > num_good_matches_required:
                 return (True, len(good))
     return (False, len(good))
-def validate(ctx, param, value):
-    try:
-        print(value)
-        return value
-    except ValueError:
-        raise click.BadParameter('rolls need to be in format NdM')
+
 @click.command()
 @click.option('--show-debug-window', is_flag=True)
 @click.option('--monitor', default=1, show_default=True, help='Index of the screen to capture', metavar='<int>')
@@ -98,9 +92,9 @@ def validate(ctx, param, value):
 @click.option('--scene-off', default="Live Gaming", show_default=True, help='Scene to activate when not triggered (use quotes if necessary)', metavar='<text>')
 @click.option('--features', default=500, show_default=True, help='Number of features to detect', metavar='<int>')
 @click.option('--matches', default=20, show_default=True, help='Number of matches required for triggering', metavar='<int>')
-@click.argument('resource-dir', type=click.Path(exists=True,file_okay=False, dir_okay=True), callback=validate)
-def main(resource_dir, monitor, format, scene_on, scene_off, features, matches, show_debug_window):
-
+@click.option('--port', default=4444, show_default=True, help='OBS websocket listening port', metavar='<int>')
+@click.argument('resource-dir', type=click.Path(exists=True,file_okay=False, dir_okay=True))
+def main(resource_dir, monitor, format, scene_on, scene_off, features, matches, port, show_debug_window):
     image_directory = resource_dir + "/" + format
     mask_file = resource_dir + "/mask-" + format + ".png"
 
@@ -140,4 +134,6 @@ def main(resource_dir, monitor, format, scene_on, scene_off, features, matches, 
 
 
 if __name__ == "__main__":
-    main(auto_envvar_prefix='OBFUSCATOR')
+    with open(dirname(realpath(__file__)) + "/settings.json") as settings_file:
+        application_settings = json.load(settings_file)
+    main(auto_envvar_prefix='OBFUSCATOR', default_map=application_settings)
