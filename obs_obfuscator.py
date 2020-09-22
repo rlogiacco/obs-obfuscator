@@ -84,16 +84,21 @@ def frame_contains_one_or_more_matching_images(frame, mask, image_descriptors, f
             if len(good) > num_good_matches_required:
                 return (True, len(good))
     return (False, len(good))
-
+def validate(ctx, param, value):
+    try:
+        print(value)
+        return value
+    except ValueError:
+        raise click.BadParameter('rolls need to be in format NdM')
 @click.command()
 @click.option('--show-debug-window', is_flag=True)
 @click.option('--monitor', default=1, show_default=True, help='Index of the screen to capture', metavar='<int>')
-@click.option('--format', required=True, type=click.Choice(['720p','960p','1080p', '1440p', '2160p'], case_sensitive=False), help='Screen format')
+@click.option('--format', required=True, type=click.Choice(['720p','960p','1080p', '1440p', '2160p'], case_sensitive=False), help='Screen format', prompt='Your game resolution')
 @click.option('--scene-on', default="Live Gaming (Map Covered)", show_default=True, help='Scene to activate when triggered (use quotes if necessary)', metavar='<text>')
 @click.option('--scene-off', default="Live Gaming", show_default=True, help='Scene to activate when not triggered (use quotes if necessary)', metavar='<text>')
 @click.option('--features', default=500, show_default=True, help='Number of features to detect', metavar='<int>')
 @click.option('--matches', default=20, show_default=True, help='Number of matches required for triggering', metavar='<int>')
-@click.argument('resource-dir', type=click.Path(exists=True,file_okay=False, dir_okay=True))
+@click.argument('resource-dir', type=click.Path(exists=True,file_okay=False, dir_okay=True), callback=validate)
 def main(resource_dir, monitor, format, scene_on, scene_off, features, matches, show_debug_window):
 
     image_directory = resource_dir + "/" + format
