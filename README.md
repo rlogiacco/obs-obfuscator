@@ -10,7 +10,7 @@ This script is designed to recognise specific content on your screen and change 
 
 The initial use-case is to recognise when the map is open in Hell Let Loose, and change scenes in OBS so that map is not revealed to the live broadcast viewers.
 
-The `hll` folder contains images which are always displayed when the HLL map is open, and a mask file to reduce the image down to where those images show. These images are organized for screen resolutions (currently only 1080p and 1440p). Use the "--show-debug-window" option to see what the script sees after applying the mask.
+The `hll` folder contains images which are always displayed when the HLL map is open, and a mask file to reduce the image down to where those images show. These images are organized for screen resolutions (currently only `1080p` and `1440p`). Use the "--show-debug-window" option to see what the script sees after applying the mask.
 
 **With your contributions additional games and format might be supported: submit your files via a Github Pull Request.**
 
@@ -25,3 +25,20 @@ The `hll` folder contains images which are always displayed when the HLL map is 
 6. Start (or restart) OBS (Note that Streamlabs OBS will not work)
 7. Run the script providing the game screen format (either `1080p`, if you play in Full HD, or `1440p`, if you play in Quad HD) and the resources folder (only `hll` current provided) along with any other settings you want to override (use `--help` flag to get help on all the supported settings)
 8. Since the script is not instantaneous (it takes a small amount of time to recognise the images, and a small amount of time to contact OBS), it is probably a good idea to look at the script's "Suggested OBS source delay" logs and set your scene delay (in OBS) to something around that. ~150ms seems to work well on the creator's hardware.
+
+Default values are provided for each option, but if you find you often have to set the same options (like the screen format) you can customize the default value by updating the `defaults.json` file which allows to override every single option of the command line:
+
+```json
+{
+    "monitor": 1,
+    "format": "1080p",
+    "scene_off": "Live Gaming",
+    "scene_on": "Live Gaming (Map Covered)",
+    "features": 500,
+    "matches": 20,
+    "port": 4444,
+    "show_debug_window": true
+}
+```
+
+An executable shell script (`.bat`) can be created to start the script without having to get to the command line each and every time, like the `hll_obfuscator.bat` example file.

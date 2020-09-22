@@ -73,10 +73,9 @@ def frame_contains_one_or_more_matching_images(frame, mask, image_descriptors, f
                 if m.distance < 0.75*n.distance:
                     good.append([m])
 
-            # print("Found {} good matches".format(len(good)))
             if show_debug_window:
                 cv2.drawKeypoints(frame, keypoints, frame)
-                cv2.imshow("test", cv2.resize(frame, (0, 0), fx=0.5, fy=0.5))
+                cv2.imshow("OBS Obfuscator - Debug Window", cv2.resize(frame, (0, 0), fx=0.5, fy=0.5))
                 cv2.waitKey(1)
                 print("Num matches: {}".format(len(good)))
             

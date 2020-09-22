@@ -5,5 +5,6 @@
     "scene_on": "Live Gaming (Map Covered)",
     "features": 500,
     "matches": 20,
-    "port": 4444
+    "port": 4444,
+    "show_debug_window": true
 }
